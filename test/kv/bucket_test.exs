@@ -2,8 +2,10 @@ defmodule KV.BucketTest do
   use ExUnit.Case, async: true
 
   setup do
-      {:ok, bucket} = KV.Bucket.start_link([])
-      %{bucket: bucket}
+    # The advantage of using start_supervised! is that ExUnit will guarantee
+    # that the registry process will be shutdown before the next test starts.
+    bucket = start_supervised!(KV.Bucket)
+    %{bucket: bucket}
   end
 
   test "stores values by key", %{bucket: bucket} do
